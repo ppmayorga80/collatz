@@ -1,9 +1,12 @@
+import os.path
+
 import colorama
 import matplotlib.pyplot as plt
 
 from functools import cache
 from colorama import init, Fore, Back, Style
 from colorama.ansi import AnsiFore, AnsiBack
+from graphviz import Digraph
 
 init(autoreset=True)
 
@@ -111,9 +114,30 @@ class Collatz:
                     cprint(f"{sija:{tw}}", fg=Fore.YELLOW)
             print("")
 
+    @classmethod
+    def graph_upto(cls, n: int, output_path: str = ""):
+        if not output_path:
+            output_path = os.path.join(os.path.dirname(__file__), f"collatz-{n}")
+
+        s = [cls.c(i) for i in range(1, n)]
+        data = list(set([(si[j - 1], si[j]) for si in s for j in range(1, len(si))]))
+
+        dot = Digraph()
+        dot.node(str(n), style="filled", fillcolor="cyan")
+
+        for u, v in data:
+            color = "red" if v < u else "blue"
+            dot.edge(str(u), str(v), color=color, penwidth='2.0')  # node names must be strings
+
+        # Render and optionally display
+        dot.render(output_path, format='png', view=True)  # saves and opens 'graph_output.png'
+
 
 if __name__ == '__main__':
     # Collatz.plot_parity_upto(10000)
     # a = Collatz.largest_seq(k=5, ak=3)
     # print(a)
-    Collatz.sieve_upto(20, cols=10)
+    # Collatz.sieve_upto(30, cols=10)
+    k = 4
+    ak = 1
+    Collatz.graph_upto(2 ** (k + 1) * ak - 1)
