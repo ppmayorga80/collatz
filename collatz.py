@@ -138,6 +138,9 @@ if __name__ == '__main__':
     # a = Collatz.largest_seq(k=5, ak=3)
     # print(a)
     # Collatz.sieve_upto(30, cols=10)
-    k = 4
-    ak = 1
-    Collatz.graph_upto(2 ** (k + 1) * ak - 1)
+    n = 1
+    k = (3, 3, 3, 3)
+    for ki in k[::-1]:
+        n = 2 ** ki * n - 1
+
+    Collatz.graph_upto(n)
